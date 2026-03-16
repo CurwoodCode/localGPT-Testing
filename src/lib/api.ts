@@ -1,4 +1,32 @@
-const API_BASE_URL = 'http://localhost:8000';
+const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '0.0.0.0', '[::1]']);
+
+const resolveBaseUrl = (configuredUrl: string | undefined, fallbackPort: number): string => {
+  if (typeof window === 'undefined') {
+    return configuredUrl || `http://localhost:${fallbackPort}`;
+  }
+
+  const fallbackUrl = `${window.location.protocol}//${window.location.hostname}:${fallbackPort}`;
+  if (!configuredUrl) return fallbackUrl;
+
+  try {
+    const parsed = new URL(configuredUrl, window.location.origin);
+    const currentHost = window.location.hostname;
+
+    if (parsed.hostname === '0.0.0.0') {
+      parsed.hostname = currentHost;
+    } else if (LOCAL_HOSTNAMES.has(parsed.hostname) && !LOCAL_HOSTNAMES.has(currentHost)) {
+      parsed.hostname = currentHost;
+    }
+
+    if (!parsed.port) parsed.port = String(fallbackPort);
+    return parsed.toString().replace(/\/$/, '');
+  } catch {
+    return fallbackUrl;
+  }
+};
+
+const API_BASE_URL = resolveBaseUrl(process.env.NEXT_PUBLIC_API_URL, 8000);
+const RAG_API_URL = resolveBaseUrl(process.env.NEXT_PUBLIC_RAG_API_URL, 8001);
 
 // 🆕 Simple UUID generator for client-side message IDs
 export const generateUUID = () => {
@@ -586,7 +614,7 @@ class ChatAPI {
     if (typeof forceRag === 'boolean') payload.force_rag = forceRag;
     if (typeof provencePrune === 'boolean') payload.provence_prune = provencePrune;
 
-    const resp = await fetch('http://localhost:8001/chat/stream', {
+    const resp = await fetch(`${RAG_API_URL}/chat/stream`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
