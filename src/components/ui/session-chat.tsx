@@ -60,7 +60,7 @@ export const SessionChat = forwardRef<SessionChatRef, SessionChatProps>(({
   const [rerankerTopK, setRerankerTopK] = useState<number>(10)
   const [searchType, setSearchType] = useState<string>('hybrid')
   const [generationModels,setGenerationModels]=useState<string[]>([])
-  const [selectedModel,setSelectedModel]=useState<string>('qwen3:8b')
+  const [selectedModel,setSelectedModel]=useState<string>('qwen3.5:9b')
   const [currentIndexId, setCurrentIndexId] = useState<string | null>(null)
   const [currentIndexName, setCurrentIndexName] = useState<string | null>(null)
   const [showSettings, setShowSettings] = useState(false)
@@ -121,7 +121,7 @@ export const SessionChat = forwardRef<SessionChatRef, SessionChatProps>(({
         const resp=await apiService.getModels();
         setGenerationModels(resp.generation_models||[])
         if(resp.generation_models&&resp.generation_models.length>0){
-          const def = resp.generation_models.find((m:string)=>m==='qwen3:8b');
+          const def = resp.generation_models.find((m:string)=>m==='qwen3.5:9b');
           setSelectedModel(def || resp.generation_models[0])
         }
       }catch(e){console.warn('Failed to load models',e)}

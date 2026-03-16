@@ -48,7 +48,7 @@ export function QuickChat({ sessionId: externalSessionId, onSessionChange, class
         const resp = await api.getModels();
         setGenerationModels(resp.generation_models||[]);
         if(resp.generation_models && resp.generation_models.length>0){
-          const def = resp.generation_models.find((m:string)=>m==='qwen3:8b');
+          const def = resp.generation_models.find((m:string)=>m==='qwen3.5:9b');
           setSelectedModel(def || resp.generation_models[0]);
         }
       }catch(e){console.warn('Failed to load models',e);}

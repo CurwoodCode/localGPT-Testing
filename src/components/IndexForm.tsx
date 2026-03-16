@@ -21,7 +21,7 @@ export function IndexForm({ onClose, onIndexed }: Props) {
   const [enableEnrich, setEnableEnrich] = useState(true);
   const [retrievalMode, setRetrievalMode] = useState<'hybrid' | 'vector' | 'fts'>('hybrid');
   const [embeddingModel, setEmbeddingModel] = useState<string>();
-  const DEFAULT_LLM = 'qwen3:0.6b';
+  const DEFAULT_LLM = 'qwen3.5:0.8b';
   const [enrichModel, setEnrichModel] = useState<string>(DEFAULT_LLM);
   const [overviewModel, setOverviewModel] = useState<string>(DEFAULT_LLM);
   const [batchSizeEmbed, setBatchSizeEmbed] = useState(64);

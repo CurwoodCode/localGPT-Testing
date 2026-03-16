@@ -145,8 +145,8 @@ def create_index_simple():
         config = PIPELINE_CONFIGS.get("default", {})
         ollama_client = OllamaClient()
         ollama_config = {
-            "generation_model": "qwen3:0.6b",
-            "embedding_model": "qwen3:0.6b"
+            "generation_model": "qwen3.5:0.8b",
+            "embedding_model": "qwen3.5:0.8b"
         }
         
         pipeline = IndexingPipeline(config, ollama_client, ollama_config)

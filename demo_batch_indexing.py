@@ -60,8 +60,8 @@ class BatchIndexingDemo:
             self.pipeline_config,
             self.ollama_client,
             self.config.get("ollama_config", {
-                "generation_model": "qwen3:0.6b",
-                "embedding_model": "qwen3:0.6b"
+            "generation_model": "qwen3.5:0.8b",
+            "embedding_model": "qwen3:0.6b"
             })
         )
     
@@ -178,7 +178,7 @@ class BatchIndexingDemo:
             
             # Process documents through pipeline
             start_time = time.time()
-            self.pipeline.process_documents(valid_documents)
+            self.pipeline.run(documents=valid_documents)
             processing_time = time.time() - start_time
             
             print(f"✅ Index '{index_name}' created successfully!")
@@ -189,7 +189,8 @@ class BatchIndexingDemo:
             return index_id
             
         except Exception as e:
-            print(f"❌ Error creating index '{index_name}': {e}")
+            index_name_for_error = index_name if 'index_name' in locals() else 'Unknown Index'
+            print(f"❌ Error creating index '{index_name_for_error}': {e}")
             import traceback
             traceback.print_exc()
             return None
@@ -265,7 +266,7 @@ def create_sample_config():
             "contextual_enricher": {
                 "enabled": True,
                 "window_size": 2,
-                "model_name": "qwen3:0.6b"
+                "model_name": "qwen3.5:0.8b"
             },
             "chunking": {
                 "chunk_size": 512,
@@ -289,7 +290,7 @@ def create_sample_config():
             }
         },
         "ollama_config": {
-            "generation_model": "qwen3:0.6b",
+            "generation_model": "qwen3.5:9b",
             "embedding_model": "qwen3:0.6b"
         },
         "indexes": [

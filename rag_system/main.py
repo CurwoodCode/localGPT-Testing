@@ -31,8 +31,8 @@ LLM_BACKEND = os.getenv("LLM_BACKEND", "ollama")
 # Ollama Models Configuration (for inference via Ollama)
 OLLAMA_CONFIG = {
     "host": os.getenv("OLLAMA_HOST", "http://localhost:11434"),
-    "generation_model": "qwen3:8b",  # Main text generation model
-    "enrichment_model": "qwen3:0.6b",  # Lightweight model for routing/enrichment
+    "generation_model": "qwen3.5:9b",  # Main text generation model
+    "enrichment_model": "qwen3.5:0.8b",  # Lightweight model for routing/enrichment
 }
 
 WATSONX_CONFIG = {

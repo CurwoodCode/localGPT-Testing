@@ -44,8 +44,8 @@ class IndexCreator:
         # Initialize Ollama client
         self.ollama_client = OllamaClient()
         self.ollama_config = {
-            "generation_model": "qwen3:0.6b",
-            "embedding_model": "qwen3:0.6b"
+        "generation_model": "qwen3.5:0.8b",
+        "embedding_model": "qwen3.5:0.8b"
         }
         
         # Initialize indexing pipeline
@@ -160,7 +160,7 @@ class IndexCreator:
         # Model selection
         print("\nModel Configuration:")
         embedding_model = self.get_user_input("Embedding model", "Qwen/Qwen3-Embedding-0.6B")
-        generation_model = self.get_user_input("Generation model", "qwen3:0.6b")
+        generation_model = self.get_user_input("Generation model", "qwen3.5:9b")
         
         return {
             "chunk_size": chunk_size,
@@ -221,7 +221,7 @@ class IndexCreator:
             
             # Process documents through pipeline
             print("📚 Processing documents...")
-            self.pipeline.process_documents(documents)
+            self.pipeline.run(documents=documents)
             
             print(f"\n✅ Index '{index_name}' created successfully!")
             print(f"Index ID: {index_id}")
@@ -300,7 +300,7 @@ class IndexCreator:
                 self.db.add_document_to_index(index_id, filename, doc_path)
             
             # Process documents
-            self.pipeline.process_documents(valid_documents)
+            self.pipeline.run(documents=valid_documents)
             
             print(f"✅ Batch index '{index_name}' created successfully!")
             print(f"Index ID: {index_id}")
@@ -327,7 +327,7 @@ def create_sample_batch_config():
             "enable_latechunk": True,
             "enable_docling": True,
             "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
-            "generation_model": "qwen3:0.6b",
+            "generation_model": "qwen3.5:9b",
             "retrieval_mode": "hybrid",
             "window_size": 2
         }
