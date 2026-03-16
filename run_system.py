@@ -151,7 +151,8 @@ class ServiceManager:
                 command=['npm', 'run', 'dev' if self.mode == 'dev' else 'start'],
                 port=3000,
                 startup_delay=5,
-                required=False  # Optional in case Node.js not available
+                required=False,  # Optional in case Node.js not available
+                env={'HOST': '0.0.0.0'}  # Listen on all interfaces for external access
             )
         }
         
@@ -175,10 +176,17 @@ class ServiceManager:
         """Check if a port is already in use."""
         try:
             for conn in psutil.net_connections():
-                if conn.laddr.port == port and conn.status == 'LISTEN':
+                # Handle different psutil versions where laddr might be tuple or object
+                laddr_port = getattr(conn.laddr, 'port', None)
+                if laddr_port is None and isinstance(conn.laddr, tuple) and len(conn.laddr) >= 2:
+                    laddr_port = conn.laddr[1]
+                if laddr_port is None:
+                    continue
+                    
+                if laddr_port == port and getattr(conn, 'status', None) == 'LISTEN':
                     return True
             return False
-        except (psutil.AccessDenied, AttributeError):
+        except (psutil.AccessDenied, AttributeError, IndexError):
             # Fallback method
             import socket
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -313,6 +321,10 @@ class ServiceManager:
         service_logger.addHandler(file_handler)
         
         try:
+            # Check if stdout is available
+            if process.stdout is None:
+                self.logger.error(f"Process {service_name} has no stdout to monitor")
+                return
             for line in iter(process.stdout.readline, ''):
                 if line.strip():
                     # Create log record with service context
